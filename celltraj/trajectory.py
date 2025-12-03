@@ -3819,7 +3819,7 @@ class Trajectory:
         print(nprops)
         mm_properties=np.ones((max_cellid+1,nprops))*np.nan
         for ic in indcells:
-            if ic%10==0:
+            if ic%1==0:
                 print(f'calculating boundary moments for cell {ic}/{max_cellid}')
             mm_props=[]
             indc=np.where(boundary_library['global_index']==ic)[0]
@@ -3827,51 +3827,64 @@ class Trajectory:
             for istate_cell in range(cell_states.size):
                 #print(cell_state_names[cell_states[istate_cell]])
                 for istate_nn in nn_states:
-                    border_nn_pts=boundary_library['nn_pts_states'][indc,istate_nn,:]
-                    dists=np.linalg.norm(border_nn_pts-border_pts,axis=1)
-                    border_charge=2.*((1./boundary_resolution)*(1./dists)-.5)
-                    moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
+                    try:
+                        border_nn_pts=boundary_library['nn_pts_states'][indc,istate_nn,:]
+                        if border_nn_pts.shape[0]!=border_pts.shape[0]:
+                            error_array=np.array[f'{self.h5filename} ic {ic} with cell inds {indc[0]} to {indc[-1]} and shape {border_nn_pts.shape[0]}-{border_pts.shape[0]}']
+                            np.savetxt(f'error_mmprops_{sctm.figid.decode()}_c{ic}.txt',error_array)
+                        dists=np.linalg.norm(border_nn_pts-border_pts,axis=1)
+                        border_charge=2.*((1./boundary_resolution)*(1./dists)-.5)
+                        moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
+                    except:
+                        moments=np.ones(order+1)*np.nan
                     mm_props.append(moments)
                 if include_dx_prevs:
                     border_dx_prevs=boundary_library['dx_prevs'][indc,:]
                     dxc=np.sum(np.multiply(border_dx_prevs,boundary_library['surface_normals'][indc,:]),axis=1)
                     moments=spatial.get_boundary_multipole_moments(border_pts,dxc,order=order)
+                    #moments=np.ones(order+1)*np.nan
                     mm_props.append(moments)
                 if include_dx_nexts:
                     border_dx_nexts=boundary_library['dx_nexts'][indc,:]
                     dxc=np.sum(np.multiply(-border_dx_nexts,boundary_library['surface_normals'][indc,:]),axis=1)
                     moments=spatial.get_boundary_multipole_moments(border_pts,dxc,order=order)
+                    #moments=np.ones(order+1)*np.nan
                     mm_props.append(moments)
                 if include_curvatures:
                     border_charge=boundary_library['curvatures'][indc]
                     moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
+                    #moments=np.ones(order+1)*np.nan
                     mm_props.append(moments)
                 if include_vdists:
                     border_charge=boundary_library['vdists'][indc,:]
                     moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
+                    #moments=np.ones(order+1)*np.nan
                     mm_props.append(moments)
                 if include_shape:
-                    center=np.nanmean(border_pts,axis=0)
-                    dists_center=np.linalg.norm(border_pts-center,axis=1)
-                    pts=border_pts
-                    #check for 1D
                     try:
-                        ind_ax1d=np.where((np.min(pts,axis=0)-np.max(pts,axis=0))==0.)[0]
+                        center=np.nanmean(border_pts,axis=0)
+                        dists_center=np.linalg.norm(border_pts-center,axis=1)
+                        pts=border_pts
+                        #check for 1D
+                        try:
+                            ind_ax1d=np.where((np.min(pts,axis=0)-np.max(pts,axis=0))==0.)[0]
+                        except:
+                            ind_ax1d=np.arange(pts.shape[1]).astype(int)
+                        for iax in ind_ax1d:
+                            dg=np.zeros(3)
+                            dg[iax]=.5
+                            pts=np.concatenate((pts-dg,pts+dg),axis=0)
+                        border_pts=pts
+                        try:
+                            hull=scipy.spatial.ConvexHull(points=border_pts)
+                            sphere_radius=((3./(4.*np.pi))*hull.volume)**.3333
+                        except:
+                            sphere_radius=np.nanmean(dists_center)
+                        border_charge=dists_center-sphere_radius
+                        moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
+                        moments=np.append(moments,sphere_radius)
                     except:
-                        ind_ax1d=np.arange(pts.shape[1]).astype(int)
-                    for iax in ind_ax1d:
-                        dg=np.zeros(3)
-                        dg[iax]=.5
-                        pts=np.concatenate((pts-dg,pts+dg),axis=0)
-                    border_pts=pts
-                    try:
-                        hull=scipy.spatial.ConvexHull(points=border_pts)
-                        sphere_radius=((3./(4.*np.pi))*hull.volume)**.3333
-                    except:
-                        sphere_radius=np.nanmean(dists_center)
-                    border_charge=dists_center-sphere_radius
-                    moments=spatial.get_boundary_multipole_moments(border_pts,border_charge,order=order)
-                    moments=np.append(moments,sphere_radius)
+                        moments=np.ones(order+2)*np.nan
                     mm_props.append(moments)
             mm_props=np.concatenate(mm_props)
             mm_properties[ic,:]=mm_props    
