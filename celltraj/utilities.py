@@ -6,7 +6,6 @@ import pandas
 import re
 import scipy
 import pyemma.coordinates as coor
-from adjustText import adjust_text
 import umap
 from sklearn.cluster import KMeans
 from scipy.sparse import csr_matrix

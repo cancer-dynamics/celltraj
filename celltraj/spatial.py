@@ -5,20 +5,13 @@ import imageprep as imprep
 import features
 import model
 import utilities
-import pyemma.coordinates as coor
 import scipy
 import skimage
-from nanomesh import Mesher
-import fipy
 import sklearn
 from numpy.linalg import det
 from scipy.stats import dirichlet
 import pandas as pd
-from pyntcloud import PyntCloud
 import ot
-from multipoles import MultipoleExpansion
-import pyvista as pv
-from pcdiff import knn_graph, estimate_basis, build_grad_div, laplacian
 
 def get_border_dict(labels,states=None,radius=10,state_ids=None,vdist=None,return_nnindex=True,return_nnvector=True,return_curvature=True,nn_states=None,scale=None,verbose=False,**border_args):
     """
@@ -244,6 +237,7 @@ def get_surface_points(msk,return_normals=False,return_curvature=False,knn=20,rs
     >>> border_pts.shape, normals.shape, curvature.shape
     ((960, 3), (960, 3), (960,))
     """
+    from pyntcloud import PyntCloud
     border=skimage.segmentation.find_boundaries(msk,mode='inner')
     ind=np.where(border)
     border_pts=np.array(ind).astype(float).T
@@ -544,6 +538,7 @@ def get_surface_gradvariance(border_pts,dx_ot,knn=12,use_eigs=False,use_nonspati
     - Non-finite displacement magnitudes (`||dx_ot||`) are masked and do not contribute
       to the final estimates in the graph-based branch.
     """
+    from pyntcloud import PyntCloud
     rdx_ot = np.linalg.norm(dx_ot,axis=1)
     if use_eigs:
         cloud=PyntCloud(pd.DataFrame(data=border_pts,columns=['x','y','z']))
@@ -636,6 +631,7 @@ def get_surface_displacement_deviation(border_dict,border_pts_prev,exclude_state
     >>> dx.shape
     (100, 3)
     """
+    from pyntcloud import PyntCloud
     border_pts=border_dict['pts']
     inds_ot,dx_ot=get_ot_dx(border_pts,border_pts_prev)
     rdx_ot = np.linalg.norm(dx_ot,axis=1)
@@ -1381,6 +1377,9 @@ def get_secreted_ligand_density(msk,scale=2.,zscale=1.,npad=None,indz_bm=0,secre
     - The function includes various options for handling different boundary conditions, cell shapes, and secretion rates.
 
     """
+    import fipy
+    from nanomesh import Mesher
+    import pyemma.coordinates as coor
     if npad is None:
         npad=np.array([0,0,0])
     if D is None:
@@ -1591,6 +1590,7 @@ def get_border_properties(cell_labels,surfaces=None,cell_states=None,state_ids=N
     ... )
 
     """
+    from multipoles import MultipoleExpansion
     labels=cell_labels.copy()
     max_cellid=np.max(labels)
     cell_ids=np.unique(labels)
@@ -1805,6 +1805,7 @@ def get_boundary_multipole_moments(border_pts,border_charge,order=1,return_momen
       https://github.com/maroba/multipoles?tab=readme-ov-file
     - Points with non-finite charges are filtered out before expansion.
     """
+    from multipoles import MultipoleExpansion
     indgood=np.where(np.isfinite(border_charge))[0]
     border_charge=border_charge[indgood]
     border_pts=border_pts[indgood,:]

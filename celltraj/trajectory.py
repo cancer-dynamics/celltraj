@@ -7,9 +7,6 @@ import h5py
 from scipy.sparse import coo_matrix
 import matplotlib
 import matplotlib.pyplot as plt
-import pyemma.coordinates as coor
-import pyemma.coordinates.clustering as clustering
-import pyemma
 from skimage import transform as tf
 from skimage.measure import regionprops_table
 import skimage.morphology
@@ -18,21 +15,14 @@ from scipy.optimize import minimize
 from scipy import ndimage
 import scipy
 import csaps
-import mahotas
-import mahotas.labeled
 import pickle
-from pystackreg import StackReg
-import pyemma.coordinates as coor
 import numpy.matlib
-import umap
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 import utilities
 import imageprep as imprep
 import features
-from nanomesh import Mesher
-import fipy
 import spatial
 if 'ipykernel' in sys.modules:
     from IPython.display import clear_output
@@ -1263,6 +1253,7 @@ class Trajectory:
         --------
         >>> transformations = traj.get_stack_trans(mskchannel=1, ntrans=10, maxt=5, do_global=False)
         """
+        import pyemma.coordinates as coor
         nframes=self.nt
         tSet=np.zeros((nframes,self.ndim))
         msk0=self.get_mask_data(0)
@@ -2812,6 +2803,9 @@ class Trajectory:
         - It uses finite element methods to solve diffusion equations over the generated mesh, constrained by the cellular boundaries and secretion rates.
 
         """
+        import pyemma.coordinates as coor
+        from nanomesh import Mesher
+        import fipy
         if npad is None:
             npad=np.array([0,0,0])
         if D is None:

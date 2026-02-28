@@ -1,9 +1,9 @@
-name: celltraj4d_env
+name: celltraj_env
 channels:
   - conda-forge
   - defaults
 dependencies:
- - python=3.8
+ - python=3.9
  - numpy
  - h5py
  - matplotlib
@@ -14,19 +14,24 @@ dependencies:
  - scipy
  - pip
  - scikit-image
+ - scikit-learn
  - scipy
  - mahotas
  - umap-learn
  - pytorch
  - pandas
- - scikit-learn
- - pygpcca
+ - dask
+ - msmtools
+ - fipy
+ - pot
 
  - pip:
    - csaps
    - pystackreg
-   - cellpose
+   - pygpcca
    - btrack
    - adjustText
-   - open3d
-   - napari-sam
+   - cmapfile
+   - nanomesh
+   - seaborn
+   - pyntcloud

@@ -16,9 +16,7 @@ from skimage.feature import peak_local_max
 import matplotlib.pyplot as plt
 from scipy import ndimage
 from skimage.filters import threshold_local
-import pyemma.coordinates.clustering
 import re
-from pystackreg import StackReg
 from skimage import transform as tf
 from sklearn.linear_model import LinearRegression
 from scipy import ndimage
@@ -971,6 +969,7 @@ def get_voronoi_masks_fromcenters(nuc_centers,imgM,selection='closest'):
     ValueError
         If the dimensions of `nuc_centers` do not match the dimensions of `imgM` or if `selection` is not a recognized option.
     """
+    import pyemma.coordinates.clustering
     indBackground=np.where(np.logical_not(imgM))
     nuc_clusters=pyemma.coordinates.clustering.AssignCenters(nuc_centers, metric='euclidean')
     if imgM.ndim==2:
@@ -1258,6 +1257,7 @@ def get_voronoi_masks(labels,imgM=None):
     Exception
         Raises an exception if there is an error in calculating the centers of mass or assigning Voronoi regions.
     """
+    import pyemma.coordinates.clustering
     if imgM is None:
         print('no foreground mask provided (imgM), using entire image')
         imgM=np.ones_like(labels)>0
@@ -1444,6 +1444,7 @@ def get_registrations(imgs):
            ...,
            [ 0. , 0.2, -0.1]])
     """
+    from pystackreg import StackReg
     nimg=imgs.shape[0]
     tSet=np.zeros((nimg,3))
     sr = StackReg(StackReg.TRANSLATION)

@@ -4,8 +4,6 @@ import sys
 import pandas
 import re
 import scipy
-import pyemma.coordinates as coor
-from adjustText import adjust_text
 import itertools
 
 def get_predictedFC(state_probs,statesFC):

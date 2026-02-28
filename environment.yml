@@ -3,35 +3,17 @@ channels:
   - conda-forge
   - defaults
 dependencies:
- - python=3.9
+ - python>=3.11
  - numpy
  - h5py
  - matplotlib
- - pyemma
- - sphinx_rtd_theme
- - Sphinx
- - pytest
  - scipy
  - pip
  - scikit-image
  - scikit-learn
  - scipy
- - mahotas
- - umap-learn
  - pytorch
  - pandas
  - dask
- - msmtools
- - fipy
  - pot
 
- - pip:
-   - csaps
-   - pystackreg
-   - pygpcca
-   - btrack
-   - adjustText
-   - cmapfile
-   - nanomesh
-   - seaborn
-   - pyntcloud

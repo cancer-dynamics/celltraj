@@ -20,11 +20,12 @@ dependencies = [
   "numpy",
   "h5py",
   "matplotlib",
-  "pyemma",
   "scipy",
   "scikit-image",
   "scikit-learn",
-  "scipy"
+  "scipy",
+  "pot",
+  "csaps"
 ]
 
 [project.urls]
@@ -33,22 +34,13 @@ Issues = "https://github.com/jcopperm/celltraj/issues"
 
 [project.optional-dependencies]
 dependencies = [
-  "pystackreg",
-  "mahotas",
-  "umap-learn",
-  "pytorch",
+  "pcdiff",
+  "pyntcloud",
   "pandas",
-  "dask",
-  "msmtools",
-  "csaps",
-  "pygpcca",
-  "btrack",
-  "adjustText",
-  "cmapfile",
   "fipy",
-  "pot",
   "nanomesh",
-  "ray[default]"
+  "multipoles",
+  "pyemma"
 ]
 
 [tool.setuptools]

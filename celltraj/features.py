@@ -5,11 +5,8 @@ import sys
 import pandas
 import re
 import scipy
-import pyemma.coordinates as coor
 import imageprep as imprep
 import utilities
-from adjustText import adjust_text
-import umap
 from sklearn.cluster import KMeans
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
@@ -18,7 +15,6 @@ from scipy import ndimage
 import h5py
 import skimage.segmentation
 import skimage.measure
-import mahotas
 from sklearn.decomposition import PCA
 np.matlib=numpy.matlib
 
@@ -160,6 +156,7 @@ def featZernike(regionmask, intensity):
         If the `regionmask` and `intensity` arrays do not match in dimensions.
 
     """
+    import mahotas
     degree=12
     radius=int(np.mean(np.array(regionmask.shape))/2)
     intensity[np.logical_not(regionmask)]=0.
@@ -214,6 +211,7 @@ def featHaralick(regionmask, intensity):
         If the `regionmask` and `intensity` arrays do not match in dimensions or if other processing errors occur.
 
     """
+    import mahotas
     nlevels=21
     levels=np.linspace(-10,10,nlevels)
     levels=np.append(levels,np.inf)
@@ -287,6 +285,7 @@ def boundaryFFT(msk,ncomp=15,center=None,nth=256):
       a function of angle and computes the FFT, returning the normalized magnitudes of its components.
 
     """
+    import mahotas
     if msk.ndim==1:
         nx=int(np.sqrt(msk.size))
         msk=msk.reshape(nx,nx)
@@ -483,6 +482,7 @@ def get_cc_cs_border(mskcell,fmskcell,bordersize=0):
     ValueError
         If the input masks are not of the same shape or if other processing errors occur.
     """
+    import mahotas
     #border=skimage.segmentation.find_boundaries(mskcell,mode='inner')
     border=skimage.segmentation.find_boundaries(imprep.pad_image(mskcell,mskcell.shape[0]+2,mskcell.shape[1]+2),mode='inner')[1:mskcell.shape[0]+1,1:mskcell.shape[1]+1]
     bordercoords=np.array(np.where(border)).astype('float').T

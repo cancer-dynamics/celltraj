@@ -4,7 +4,6 @@ import sys
 import pandas
 import re
 import scipy
-import pyemma.coordinates as coor
 from adjustText import adjust_text
 import umap
 from sklearn.cluster import KMeans
@@ -159,6 +158,7 @@ def clean_clusters(clusters,P):
     >>> print(cleaned_clusters.clustercenters.shape)
     (n, 5)  # Where n is the number of clusters in the largest connected component
     """
+    import pyemma.coordinates as coor
     centers=clusters.clustercenters.copy()
     graph = csr_matrix(P>0.)
     n_components, labels = connected_components(csgraph=graph, directed=False, return_labels=True)
