@@ -5,7 +5,7 @@ import sys
 import pandas
 import re
 import scipy
-import pyemma.coordinates as coor
+from adjustText import adjust_text
 import umap
 from sklearn.cluster import KMeans
 from scipy.sparse import csr_matrix
@@ -379,3 +379,135 @@ def ternary_coords_from_3d(data_3d):
 
   # Combine the U and V coordinates into a single (N, 2) array
   return np.stack([U, V], axis=1)
+
+import sys
+import time
+import numpy as np
+
+def progress_bar(
+    current_id,
+    id_list,
+    *,
+    text_str="",
+    bar_length=40,
+    show_eta=True,
+    use_unicode=True,
+):
+    """
+    Single-line terminal progress bar.
+
+    Parameters
+    ----------
+    current_id : int
+        Current id in iteration.
+    id_list : array-like
+        Full list of ids being iterated.
+    text_str : str
+        Custom text displayed before progress bar.
+    bar_length : int
+        Length of progress bar.
+    show_eta : bool
+        If True, estimate remaining time.
+    use_unicode : bool
+        If True, uses smooth unicode blocks.
+    """
+
+    if not hasattr(progress_bar, "_start_time"):
+        progress_bar._start_time = time.time()
+
+    ids = np.asarray(id_list)
+    total = ids.size
+
+    # position of current id
+    idx = np.where(ids == current_id)[0]
+    if idx.size == 0:
+        return
+    idx = idx[0] + 1  # 1-based progress
+
+    frac = idx / total
+    filled = int(bar_length * frac)
+
+    if use_unicode:
+        bar = "█" * filled + "░" * (bar_length - filled)
+    else:
+        bar = "=" * filled + "-" * (bar_length - filled)
+
+    percent = 100 * frac
+
+    # ETA estimate
+    eta_str = ""
+    if show_eta: # and idx > 1:
+        elapsed = time.time() - progress_bar._start_time
+        rate = elapsed / idx
+        remaining = rate * (total - idx)
+        #eta_str = f" | ETA {remaining:6.1f}s"
+        eta_str = f" | elapsed {elapsed:6.1f}s"
+
+    msg = f"\r{text_str} |{bar}| {percent:6.2f}% ({idx}/{total}){eta_str}"
+
+    sys.stdout.write(msg)
+    sys.stdout.flush()
+
+    if idx == total:
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+        delattr(progress_bar, "_start_time")
+
+def _weighted_median(x, w):
+    x = np.asarray(x, float).ravel()
+    w = np.asarray(w, float).ravel()
+    m = np.isfinite(x) & np.isfinite(w) & (w > 0)
+    if not np.any(m):
+        return np.nan
+    x = x[m]
+    w = w[m]
+    order = np.argsort(x)
+    x = x[order]
+    w = w[order]
+    cw = np.cumsum(w)
+    cutoff = 0.5 * np.sum(w)
+    return float(x[np.searchsorted(cw, cutoff, side="left")])
+
+def _robust_sigma_from_hist(centers, counts,scale_mad_to_sigma=True):
+    """
+    Robust width from histogram support using weighted median absolute deviation.
+    """
+    centers = np.asarray(centers, float)
+    counts = np.asarray(counts, float)
+    med = _weighted_median(centers, counts)
+    if not np.isfinite(med):
+        return np.nan
+    mad = _weighted_median(np.abs(centers - med), counts)
+    if not np.isfinite(mad):
+        return np.nan
+    if scale_mad_to_sigma:
+        return float(1.4826 * mad)
+    return float(mad)
+
+def _robust_sigma_from_samples(x,scale_mad_to_sigma=True):
+    """
+    Robust width from raw samples using median absolute deviation.
+    """
+    x = np.asarray(x, float).ravel()
+    x = x[np.isfinite(x)]
+    if x.size == 0:
+        return np.nan
+    med = np.median(x)
+    mad = np.median(np.abs(x - med))
+    if scale_mad_to_sigma:
+        return float(1.4826 * mad)
+    return float(mad)
+
+def create_clusters(my_centers):
+    from sklearn.cluster import KMeans
+    n_clusters = my_centers.shape[0]
+    # 2. Initialize KMeans with centers
+    kmeans = KMeans(n_clusters=n_clusters, init=my_centers, n_init=1)
+    # Note: You still need to call fit() once to configure the internal structures,
+    # but it will not change the centers if configured correctly.
+    # A trick is to use:
+    kmeans.cluster_centers_ = my_centers
+    kmeans.n_iter_ = 0 # Dummy iteration
+    kmeans.assign=kmeans.predict # 3. Assign new data (similar to .assign(x))
+    #cluster_ids = kmeans.predict(new_data)
+    return kmeans

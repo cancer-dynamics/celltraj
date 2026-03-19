@@ -12,6 +12,7 @@ from numpy.linalg import det
 from scipy.stats import dirichlet
 import pandas as pd
 import ot
+from pcdiff import knn_graph, estimate_basis, build_grad_div, laplacian
 
 def get_border_dict(labels,states=None,radius=10,state_ids=None,vdist=None,return_nnindex=True,return_nnvector=True,return_curvature=True,nn_states=None,scale=None,verbose=False,**border_args):
     """
