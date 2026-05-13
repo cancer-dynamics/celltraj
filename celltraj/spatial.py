@@ -136,6 +136,7 @@ def get_border_dict(labels,states=None,radius=10,state_ids=None,vdist=None,retur
             #knn_states=[None]*(np.max(states)+1)
             inds_states=[None]*(nstates)
             iset=np.where(np.isin(states,nn_states))[0]
+            iset=np.intersect1d(iset,np.unique(labels)) #added 13may26 for list out of range error
             stateset=np.unique(states)
             for istate in stateset:
                 inds_states[istate]=np.where(border_dict['states']==istate)[0]

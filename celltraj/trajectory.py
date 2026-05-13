@@ -1253,7 +1253,7 @@ class Trajectory:
         --------
         >>> transformations = traj.get_stack_trans(mskchannel=1, ntrans=10, maxt=5, do_global=False)
         """
-        import pyemma.coordinates as coor
+        #import pyemma.coordinates as coor
         nframes=self.nt
         tSet=np.zeros((nframes,self.ndim))
         msk0=self.get_mask_data(0)
@@ -1275,7 +1275,8 @@ class Trajectory:
                 if do_global:
                     dcom=np.mean(centers0,axis=0)-np.mean(centers1,axis=0)
                     centers1=centers1-dcom
-                    clusters0=coor.clustering.AssignCenters(centers0, metric='euclidean')
+                    #clusters0=coor.clustering.AssignCenters(centers0, metric='euclidean')
+                    clusters0=utilities.create_clusters(centers0)
                     ind0to1=clusters0.assign(centers1)
                     centers0_com=centers0[ind0to1,:]
                     dglobal=np.mean(centers0_com-centers1,axis=0)
