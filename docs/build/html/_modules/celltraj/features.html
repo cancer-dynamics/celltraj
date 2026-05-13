@@ -78,11 +78,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">imageprep</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">imprep</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">utilities</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">adjustText</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjust_text</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.csgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">connected_components</span>
@@ -91,7 +88,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skimage.segmentation</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skimage.measure</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">mahotas</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 <span class="n">np</span><span class="o">.</span><span class="n">matlib</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">matlib</span>
 
@@ -244,6 +240,7 @@
 <span class="sd">        If the `regionmask` and `intensity` arrays do not match in dimensions.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mahotas</span>
     <span class="n">degree</span><span class="o">=</span><span class="mi">12</span>
     <span class="n">radius</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">regionmask</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">intensity</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">regionmask</span><span class="p">)]</span><span class="o">=</span><span class="mf">0.</span>
@@ -301,6 +298,7 @@
 <span class="sd">        If the `regionmask` and `intensity` arrays do not match in dimensions or if other processing errors occur.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mahotas</span>
     <span class="n">nlevels</span><span class="o">=</span><span class="mi">21</span>
     <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">nlevels</span><span class="p">)</span>
     <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
@@ -377,6 +375,7 @@
 <span class="sd">      a function of angle and computes the FFT, returning the normalized magnitudes of its components.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mahotas</span>
     <span class="k">if</span> <span class="n">msk</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
         <span class="n">nx</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">msk</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
         <span class="n">msk</span><span class="o">=</span><span class="n">msk</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span>
@@ -582,6 +581,7 @@
 <span class="sd">    ValueError</span>
 <span class="sd">        If the input masks are not of the same shape or if other processing errors occur.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mahotas</span>
     <span class="c1">#border=skimage.segmentation.find_boundaries(mskcell,mode=&#39;inner&#39;)</span>
     <span class="n">border</span><span class="o">=</span><span class="n">skimage</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">imprep</span><span class="o">.</span><span class="n">pad_image</span><span class="p">(</span><span class="n">mskcell</span><span class="p">,</span><span class="n">mskcell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">mskcell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="n">mskcell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="n">mskcell</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">bordercoords</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">border</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>

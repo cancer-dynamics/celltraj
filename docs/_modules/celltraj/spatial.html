@@ -78,19 +78,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">features</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">model</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">utilities</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">skimage</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nanomesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesher</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">fipy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">det</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">dirichlet</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyntcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyntCloud</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">ot</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">multipoles</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipoleExpansion</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pcdiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">knn_graph</span><span class="p">,</span> <span class="n">estimate_basis</span><span class="p">,</span> <span class="n">build_grad_div</span><span class="p">,</span> <span class="n">laplacian</span>
 
 <div class="viewcode-block" id="get_border_dict">
@@ -322,6 +316,7 @@
 <span class="sd">    &gt;&gt;&gt; border_pts.shape, normals.shape, curvature.shape</span>
 <span class="sd">    ((960, 3), (960, 3), (960,))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyntcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyntCloud</span>
     <span class="n">border</span><span class="o">=</span><span class="n">skimage</span><span class="o">.</span><span class="n">segmentation</span><span class="o">.</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">msk</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
     <span class="n">ind</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">border</span><span class="p">)</span>
     <span class="n">border_pts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
@@ -631,6 +626,7 @@
 <span class="sd">    - Non-finite displacement magnitudes (`||dx_ot||`) are masked and do not contribute</span>
 <span class="sd">      to the final estimates in the graph-based branch.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyntcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyntCloud</span>
     <span class="n">rdx_ot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dx_ot</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">use_eigs</span><span class="p">:</span>
         <span class="n">cloud</span><span class="o">=</span><span class="n">PyntCloud</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">border_pts</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">]))</span>
@@ -726,6 +722,7 @@
 <span class="sd">    &gt;&gt;&gt; dx.shape</span>
 <span class="sd">    (100, 3)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyntcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyntCloud</span>
     <span class="n">border_pts</span><span class="o">=</span><span class="n">border_dict</span><span class="p">[</span><span class="s1">&#39;pts&#39;</span><span class="p">]</span>
     <span class="n">inds_ot</span><span class="p">,</span><span class="n">dx_ot</span><span class="o">=</span><span class="n">get_ot_dx</span><span class="p">(</span><span class="n">border_pts</span><span class="p">,</span><span class="n">border_pts_prev</span><span class="p">)</span>
     <span class="n">rdx_ot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dx_ot</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1504,6 +1501,9 @@
 <span class="sd">    - The function includes various options for handling different boundary conditions, cell shapes, and secretion rates.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">fipy</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nanomesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesher</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
     <span class="k">if</span> <span class="n">npad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">npad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">D</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1720,6 +1720,7 @@
 <span class="sd">    ... )</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">multipoles</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipoleExpansion</span>
     <span class="n">labels</span><span class="o">=</span><span class="n">cell_labels</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">max_cellid</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
     <span class="n">cell_ids</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
@@ -1937,6 +1938,7 @@
 <span class="sd">      https://github.com/maroba/multipoles?tab=readme-ov-file</span>
 <span class="sd">    - Points with non-finite charges are filtered out before expansion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">multipoles</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipoleExpansion</span>
     <span class="n">indgood</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">border_charge</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">border_charge</span><span class="o">=</span><span class="n">border_charge</span><span class="p">[</span><span class="n">indgood</span><span class="p">]</span>
     <span class="n">border_pts</span><span class="o">=</span><span class="n">border_pts</span><span class="p">[</span><span class="n">indgood</span><span class="p">,:]</span>
@@ -1954,7 +1956,7 @@
             <span class="n">magnitudes</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">lmoments</span><span class="p">)</span>
         <span class="n">magnitudes</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">=</span><span class="n">magnitudes</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">return_moments</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">magnitudes</span><span class="p">,</span><span class="n">moments</span>
+        <span class="k">return</span> <span class="n">magnitudes</span><span class="p">,</span><span class="n">lmoments</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">magnitudes</span></div>
 

@@ -89,9 +89,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndimage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skimage.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">threshold_local</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates.clustering</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pystackreg</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackReg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">skimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">tf</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndimage</span>
@@ -1097,6 +1095,7 @@
 <span class="sd">    ValueError</span>
 <span class="sd">        If the dimensions of `nuc_centers` do not match the dimensions of `imgM` or if `selection` is not a recognized option.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates.clustering</span>
     <span class="n">indBackground</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">imgM</span><span class="p">))</span>
     <span class="n">nuc_clusters</span><span class="o">=</span><span class="n">pyemma</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">clustering</span><span class="o">.</span><span class="n">AssignCenters</span><span class="p">(</span><span class="n">nuc_centers</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">imgM</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
@@ -1399,6 +1398,7 @@
 <span class="sd">    Exception</span>
 <span class="sd">        Raises an exception if there is an error in calculating the centers of mass or assigning Voronoi regions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates.clustering</span>
     <span class="k">if</span> <span class="n">imgM</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no foreground mask provided (imgM), using entire image&#39;</span><span class="p">)</span>
         <span class="n">imgM</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span>
@@ -1594,6 +1594,7 @@
 <span class="sd">           ...,</span>
 <span class="sd">           [ 0. , 0.2, -0.1]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pystackreg</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackReg</span>
     <span class="n">nimg</span><span class="o">=</span><span class="n">imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">tSet</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nimg</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
     <span class="n">sr</span> <span class="o">=</span> <span class="n">StackReg</span><span class="p">(</span><span class="n">StackReg</span><span class="o">.</span><span class="n">TRANSLATION</span><span class="p">)</span>
@@ -1960,14 +1961,14 @@
     <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dsetName</span><span class="o">=</span><span class="s2">&quot;/images/img_</span><span class="si">%d</span><span class="s2">/image&quot;</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="n">iS</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">dsetName</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">dsetName</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">dset</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">img</span>
             <span class="n">dset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">timestamp</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;image &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iS</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; exists</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">f</span><span class="p">[</span><span class="n">dsetName</span><span class="p">]</span>
-                <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">dsetName</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+                <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">dsetName</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">img</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
                 <span class="n">dset</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">img</span>
                 <span class="n">dset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">timestamp</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    ...overwritten</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>

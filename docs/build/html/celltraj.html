@@ -6913,6 +6913,11 @@ of state-specific fold changes <cite>s_g</cite> and state probabilities <cite>p_
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="celltraj.utilities.create_clusters">
+<span class="sig-prename descclassname"><span class="pre">celltraj.utilities.</span></span><span class="sig-name descname"><span class="pre">create_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_centers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/celltraj/utilities.html#create_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#celltraj.utilities.create_clusters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="celltraj.utilities.dist">
 <span class="sig-prename descclassname"><span class="pre">celltraj.utilities.</span></span><span class="sig-name descname"><span class="pre">dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/celltraj/utilities.html#dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#celltraj.utilities.dist" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -6993,6 +6998,24 @@ of state-specific fold changes <cite>s_g</cite> and state probabilities <cite>p_
 <dt class="sig sig-object py" id="celltraj.utilities.load_dict_from_h5">
 <span class="sig-prename descclassname"><span class="pre">celltraj.utilities.</span></span><span class="sig-name descname"><span class="pre">load_dict_from_h5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/celltraj/utilities.html#load_dict_from_h5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#celltraj.utilities.load_dict_from_h5" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="celltraj.utilities.progress_bar">
+<span class="sig-prename descclassname"><span class="pre">celltraj.utilities.</span></span><span class="sig-name descname"><span class="pre">progress_bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_list</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/celltraj/utilities.html#progress_bar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#celltraj.utilities.progress_bar" title="Link to this definition"></a></dt>
+<dd><p>Single-line terminal progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Current id in iteration.</p></li>
+<li><p><strong>id_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>) – Full list of ids being iterated.</p></li>
+<li><p><strong>text_str</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Custom text displayed before progress bar.</p></li>
+<li><p><strong>bar_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Length of progress bar.</p></li>
+<li><p><strong>show_eta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, estimate remaining time.</p></li>
+<li><p><strong>use_unicode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, uses smooth unicode blocks.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="celltraj.utilities.recursively_load_dict_contents_from_group">

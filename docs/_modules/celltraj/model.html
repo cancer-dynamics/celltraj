@@ -77,7 +77,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">adjustText</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjust_text</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
@@ -240,6 +239,7 @@
 <span class="sd">    &gt;&gt;&gt; print(cleaned_clusters.clustercenters.shape)</span>
 <span class="sd">    (n, 5)  # Where n is the number of clusters in the largest connected component</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
     <span class="n">centers</span><span class="o">=</span><span class="n">clusters</span><span class="o">.</span><span class="n">clustercenters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">P</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span>
     <span class="n">n_components</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">csgraph</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

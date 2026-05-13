@@ -78,7 +78,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pyemma.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">adjustText</span><span class="w"> </span><span class="kn">import</span> <span class="n">adjust_text</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
@@ -512,6 +511,147 @@
 
   <span class="c1"># Combine the U and V coordinates into a single (N, 2) array</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<div class="viewcode-block" id="progress_bar">
+<a class="viewcode-back" href="../../celltraj.html#celltraj.utilities.progress_bar">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">progress_bar</span><span class="p">(</span>
+    <span class="n">current_id</span><span class="p">,</span>
+    <span class="n">id_list</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">text_str</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">bar_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">show_eta</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Single-line terminal progress bar.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    current_id : int</span>
+<span class="sd">        Current id in iteration.</span>
+<span class="sd">    id_list : array-like</span>
+<span class="sd">        Full list of ids being iterated.</span>
+<span class="sd">    text_str : str</span>
+<span class="sd">        Custom text displayed before progress bar.</span>
+<span class="sd">    bar_length : int</span>
+<span class="sd">        Length of progress bar.</span>
+<span class="sd">    show_eta : bool</span>
+<span class="sd">        If True, estimate remaining time.</span>
+<span class="sd">    use_unicode : bool</span>
+<span class="sd">        If True, uses smooth unicode blocks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">progress_bar</span><span class="p">,</span> <span class="s2">&quot;_start_time&quot;</span><span class="p">):</span>
+        <span class="n">progress_bar</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="c1"># position of current id</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ids</span> <span class="o">==</span> <span class="n">current_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">idx</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 1-based progress</span>
+
+    <span class="n">frac</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="n">filled</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bar_length</span> <span class="o">*</span> <span class="n">frac</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">use_unicode</span><span class="p">:</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="n">filled</span> <span class="o">+</span> <span class="s2">&quot;░&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_length</span> <span class="o">-</span> <span class="n">filled</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">filled</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_length</span> <span class="o">-</span> <span class="n">filled</span><span class="p">)</span>
+
+    <span class="n">percent</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">frac</span>
+
+    <span class="c1"># ETA estimate</span>
+    <span class="n">eta_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">show_eta</span><span class="p">:</span> <span class="c1"># and idx &gt; 1:</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">progress_bar</span><span class="o">.</span><span class="n">_start_time</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">elapsed</span> <span class="o">/</span> <span class="n">idx</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="n">rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="n">idx</span><span class="p">)</span>
+        <span class="c1">#eta_str = f&quot; | ETA {remaining:6.1f}s&quot;</span>
+        <span class="n">eta_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; | elapsed </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">s&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="si">{</span><span class="n">text_str</span><span class="si">}</span><span class="s2"> |</span><span class="si">{</span><span class="n">bar</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">percent</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2">% (</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">eta_str</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="n">total</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="nb">delattr</span><span class="p">(</span><span class="n">progress_bar</span><span class="p">,</span> <span class="s2">&quot;_start_time&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_weighted_median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">w</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">cutoff</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">cw</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_robust_sigma_from_hist</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span><span class="n">scale_mad_to_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Robust width from histogram support using weighted median absolute deviation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">med</span> <span class="o">=</span> <span class="n">_weighted_median</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">med</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">mad</span> <span class="o">=</span> <span class="n">_weighted_median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">centers</span> <span class="o">-</span> <span class="n">med</span><span class="p">),</span> <span class="n">counts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">mad</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">if</span> <span class="n">scale_mad_to_sigma</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">1.4826</span> <span class="o">*</span> <span class="n">mad</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">mad</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_robust_sigma_from_samples</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">scale_mad_to_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Robust width from raw samples using median absolute deviation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">med</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">mad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">med</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">scale_mad_to_sigma</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">1.4826</span> <span class="o">*</span> <span class="n">mad</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">mad</span><span class="p">)</span>
+
+<div class="viewcode-block" id="create_clusters">
+<a class="viewcode-back" href="../../celltraj.html#celltraj.utilities.create_clusters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_clusters</span><span class="p">(</span><span class="n">my_centers</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+    <span class="n">n_clusters</span> <span class="o">=</span> <span class="n">my_centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># 2. Initialize KMeans with centers</span>
+    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="n">my_centers</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Note: You still need to call fit() once to configure the internal structures,</span>
+    <span class="c1"># but it will not change the centers if configured correctly.</span>
+    <span class="c1"># A trick is to use:</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">cluster_centers_</span> <span class="o">=</span> <span class="n">my_centers</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">n_iter_</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Dummy iteration</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">my_centers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">kmeans</span><span class="p">,</span><span class="s1">&#39;_n_threads&#39;</span><span class="p">):</span>
+        <span class="n">kmeans</span><span class="o">.</span><span class="n">_n_threads</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">assign</span><span class="o">=</span><span class="n">kmeans</span><span class="o">.</span><span class="n">predict</span> <span class="c1"># 3. Assign new data (similar to .assign(x))</span>
+    <span class="c1">#cluster_ids = kmeans.predict(new_data)</span>
+    <span class="k">return</span> <span class="n">kmeans</span></div>
 
 </pre></div>
 
