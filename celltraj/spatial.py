@@ -1824,6 +1824,6 @@ def get_boundary_multipole_moments(border_pts,border_charge,order=1,return_momen
             magnitudes[l]=np.linalg.norm(lmoments)
         magnitudes[l]=magnitudes[l]/(2*l+1)
     if return_moments:
-        return magnitudes,moments
+        return magnitudes,lmoments
     else:
         return magnitudes

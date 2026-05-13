@@ -508,6 +508,9 @@ def create_clusters(my_centers):
     # A trick is to use:
     kmeans.cluster_centers_ = my_centers
     kmeans.n_iter_ = 0 # Dummy iteration
+    kmeans.fit(my_centers)
+    if not hasattr(kmeans,'_n_threads'):
+        kmeans._n_threads=1
     kmeans.assign=kmeans.predict # 3. Assign new data (similar to .assign(x))
     #cluster_ids = kmeans.predict(new_data)
     return kmeans

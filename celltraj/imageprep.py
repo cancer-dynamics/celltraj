@@ -1790,14 +1790,14 @@ def save_frame_h5(filename,frame,img=None,msks=None,fmsk=None,features=None,over
     if img is not None:
         dsetName="/images/img_%d/image" % int(iS)
         try:
-            dset = f.create_dataset(dsetName, np.shape(img))
+            dset = f.create_dataset(dsetName, np.shape(img), dtype=img.dtype)
             dset[:] = img
             dset.attrs['time']=timestamp
         except:
             sys.stdout.write('image '+str(iS)+' exists\n')
             if overwrite:
                 del f[dsetName]
-                dset = f.create_dataset(dsetName, np.shape(img))
+                dset = f.create_dataset(dsetName, np.shape(img),dtype=img.dtype)
                 dset[:] = img
                 dset.attrs['time']=timestamp
                 sys.stdout.write('    ...overwritten\n')
