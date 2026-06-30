@@ -1,37 +1,91 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+from __future__ import annotations
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-import os
+from importlib.metadata import PackageNotFoundError, version as package_version
+from pathlib import Path
 import sys
-sys.path.insert(0, os.path.abspath('../../'))
-sys.path.insert(0, os.path.abspath('../../celltraj/'))
 
 
-project = 'celltraj'
-copyright = '2024, Jeremy Copperman'
-author = 'Jeremy Copperman'
-release = '0.1.1'
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+project = "celltraj"
+author = "Jeremy Copperman"
+copyright = "2026, Jeremy Copperman"
 
-extensions = ['sphinx.ext.todo', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc','sphinx.ext.autosummary']
+try:
+    release = package_version("celltraj")
+except PackageNotFoundError:
+    init_file = SRC / "celltraj" / "__init__.py"
+    namespace: dict[str, str] = {}
+    exec(init_file.read_text(encoding="utf-8"), namespace)
+    release = namespace.get("__version__", "0.1.86")
+version = release
 
+extensions = [
+    "myst_parser",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
+]
+
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
+
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+suppress_warnings = ["docutils"]
+
+html_theme = "sphinx_rtd_theme"
+html_title = "celltraj documentation"
+html_baseurl = "https://cancerdynamics.org/docs/celltraj/"
+html_extra_path = ["_extra"]
+html_copy_source = False
+
+autosummary_generate = True
+autodoc_member_order = "bysource"
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
+}
+autodoc_typehints = "description"
+
+napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 napoleon_preprocess_types = True
 napoleon_include_init_with_doc = True
 
-templates_path = ['_templates']
-exclude_patterns = []
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+]
+myst_heading_anchors = 3
 
-
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+autodoc_mock_imports = [
+    "adjustText",
+    "btrack",
+    "csaps",
+    "dask",
+    "fipy",
+    "h5py",
+    "click",
+    "mahotas",
+    "matplotlib",
+    "multipoles",
+    "nanomesh",
+    "numpy",
+    "ot",
+    "pandas",
+    "pcdiff",
+    "pyemma",
+    "pygpcca",
+    "pyntcloud",
+    "pystackreg",
+    "scipy",
+    "skimage",
+    "sklearn",
+    "torch",
+    "umap",
+]

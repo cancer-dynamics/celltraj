@@ -29,7 +29,21 @@ Free software: MIT license
 
 Documentation
 -------------
-- `celltraj documentation <https://cancer-dynamics.github.io/celltraj>`_
+- `celltraj documentation <https://cancerdynamics.org/docs/celltraj/>`_
+
+Build the docs locally with:
+
+.. code-block:: console
+
+    $ python -m pip install -r docs/requirements.txt
+    $ bash docs/make_docs.sh
+
+Publish the generated static docs to the sibling CancerDynamics.org website
+repo with:
+
+.. code-block:: console
+
+    $ python docs/publish_to_cancerdynamics.py --build --strict
 
 Tutorials
 ---------
@@ -37,7 +51,12 @@ Tutorials
 - `MMIST: Molecular and Morphodynamics-Integrated Single-cell Trajectories Tutorial <https://github.com/cancer-dynamics/celltraj/blob/main/tutorials/mmist.ipynb>`_
 - `SITE: Serial Imaging of Tumor and microEnvironment -- Murthy et al. 2026 <https://github.com/cancer-dynamics/SITE_Murthy_2026>`
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+Repository Layout
+-----------------
+The package uses a modern ``src/`` layout. Import package modules through the
+``celltraj`` namespace, for example:
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. code-block:: python
+
+    from celltraj.trajectory import Trajectory
+    from celltraj import features, imageprep, model

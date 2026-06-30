@@ -1,8 +1,0 @@
-csaps
-pystackreg
-pygpcca
-cellpose
-sklearn
-btrack
-adjustText
-open3d

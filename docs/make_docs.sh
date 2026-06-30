@@ -1,17 +1,26 @@
-rm *.html
-rm -r _sources
-rm -r _static
-rm -r _modules
-rm -r doctrees
-rm -r build
-rm -r source/stubs
-rm source/modules.rst
-rm source/celltraj.rst
-sphinx-apidoc -o ./source ../celltraj
-make clean
-make html
-#sphinx-build -M html source/ build/ -a -j auto -n --keep-going
-cp -r build/html/* ./
-cp -r build/ ./
-cp source/readme.rst ../
-cp index.html ../
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SOURCE_DIR="${SCRIPT_DIR}/source"
+BUILD_DIR="${SCRIPT_DIR}/build/html"
+
+cd "${REPO_ROOT}"
+
+if ! python -c "import sphinx, myst_parser, sphinx_rtd_theme" >/dev/null 2>&1; then
+  echo "Missing documentation dependencies." >&2
+  echo "Install them with: python -m pip install -r docs/requirements.txt" >&2
+  exit 1
+fi
+
+SPHINXOPTS=()
+if [[ "${STRICT_DOCS:-0}" == "1" ]]; then
+  SPHINXOPTS+=("-W" "--keep-going")
+fi
+
+rm -rf "${BUILD_DIR}"
+python -m sphinx -b html -E -a "${SPHINXOPTS[@]}" "${SOURCE_DIR}" "${BUILD_DIR}"
+echo "Built celltraj docs at ${BUILD_DIR}/index.html"
+echo "To copy them into cancerdynamics.org, run:"
+echo "  python docs/publish_to_cancerdynamics.py --build"

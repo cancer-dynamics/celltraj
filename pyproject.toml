@@ -5,16 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "celltraj"
 version = "0.1.86"
-authors = [
-  { name="Jeremy Copperman", email="copperma@ohsu.edu" },
-]
 description = "Toolset for single-cell trajectory modeling."
 readme = "README.rst"
 requires-python = ">=3.8"
+authors = [
+  { name = "Jeremy Copperman", email = "copperma@ohsu.edu" },
+]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
 dependencies = [
   "numpy",
@@ -23,14 +23,15 @@ dependencies = [
   "scipy",
   "scikit-image",
   "scikit-learn",
-  "scipy",
   "pot",
-  "csaps"
+  "csaps",
+  "click",
 ]
 
 [project.urls]
-Homepage = "https://github.com/jcopperm/celltraj"
-Issues = "https://github.com/jcopperm/celltraj/issues"
+Homepage = "https://github.com/cancer-dynamics/celltraj"
+Documentation = "https://cancerdynamics.org/docs/celltraj/"
+Issues = "https://github.com/cancer-dynamics/celltraj/issues"
 
 [project.optional-dependencies]
 dependencies = [
@@ -40,10 +41,25 @@ dependencies = [
   "fipy",
   "nanomesh",
   "multipoles",
-  "pyemma"
+  "pyemma",
+]
+docs = [
+  "sphinx>=7",
+  "sphinx-rtd-theme>=2",
+  "myst-parser>=2",
+]
+dev = [
+  "pytest>=8",
 ]
 
+[project.scripts]
+celltraj = "celltraj.cli:main"
+
 [tool.setuptools]
-# ...
-package-dir = {"" = "celltraj"}
-    # directory containing all the packages (e.g.  src/mypkg1, src/mypkg2)
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
